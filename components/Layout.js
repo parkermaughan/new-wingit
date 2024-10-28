@@ -1,13 +1,14 @@
 import React from 'react'
-import Navigation from './Navigation'
 import Footer from './Footer'
-import Header from './Header'
-
+import Header from '/components/Header/Header'
+import DesktopNavigation from '/components/Header/DesktopNavigation'
+import MobileNavigation from '/components/Header/MobileNavigation'
 function Layout({ children }) {
   return (
     <>
       <Header>
-        <Navigation />
+        <DesktopNavigation />
+        <MobileNavigation />
       </Header>
       <main className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         {children}

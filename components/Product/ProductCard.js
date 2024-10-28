@@ -18,6 +18,7 @@ function ProductCard({ product }) {
               alt={image.altText ?? 'Product Image'}
               className="object-cover object-center w-full h-full group-hover:opacity-75"
               layout="fill"
+              priority
             />
           </div>
           <div className="flex justify-between m-4">
