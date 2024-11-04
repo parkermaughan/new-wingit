@@ -1,0 +1,28 @@
+.results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.resultItem {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.resultItem img {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.resultItem:hover {
+    background-color: #f0f0f0;
+}

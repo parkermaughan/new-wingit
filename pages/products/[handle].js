@@ -6,28 +6,13 @@ import {
 import ProductList from '@/components/Product/ProductList'
 import ProductForm from '@/components/Product/ProductForm'
 
-export default function ProductPage({ productByHandle, products }) {
-  const relatedProducts = products.filter(
-    ({ node: product }) => product.handle !== productByHandle.handle
-  )
-
-  return (
-    <>
-      <NextSeo
-        title={productByHandle.title ?? 'Product title'}
-        description={productByHandle.description ?? 'Product description'}
-      />
-      <ProductForm product={productByHandle} />
-      <ProductList products={relatedProducts} label="Related products" />
-    </>
-  )
-}
+// pages/products/[handle].js
 
 export async function getStaticPaths() {
   const products = await getAllProductHandles()
 
   return {
-    paths: products.map(({ node: product }) => ({
+    paths: products.map((product) => ({
       params: {
         handle: product.handle,
       },
@@ -50,3 +35,22 @@ export async function getStaticProps({ params }) {
     revalidate: 10,
   }
 }
+
+const ProductPage = ({ productByHandle, products }) => {
+  const relatedProducts = products.filter(
+    (product) => product.handle !== productByHandle.handle
+  )
+
+  return (
+    <>
+      <NextSeo
+        title={productByHandle.title ?? 'Product title'}
+        description={productByHandle.description ?? 'Product description'}
+      />
+      <ProductForm product={productByHandle} />
+      <ProductList products={relatedProducts} label="Related products" />
+    </>
+  )
+}
+
+export default ProductPage
