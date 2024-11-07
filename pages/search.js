@@ -33,7 +33,7 @@ const SearchPage = () => {
           results.map((product) => (
             <div key={product.id} className="border p-2">
               <h2>{product.title}</h2>
-              {/* Add product details here */}
+              <p>{product.price}</p>
             </div>
           ))
         ) : (
