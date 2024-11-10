@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NextSeo } from 'next-seo'
 import { getAllProducts } from '@/lib/shopify'
 import ProductList from '@/components/Product/ProductList'
 import Filter from '@/components/Filter/Filter'
 import Sort from '@/components/Sort/Sort'
+import styles from '@/components/Filter/Filter.module.css'
 
 export async function getStaticProps() {
   const products = await getAllProducts()
@@ -25,6 +26,7 @@ export async function getStaticProps() {
 const ShopPage = ({ products, categories }) => {
   const [filteredProducts, setFilteredProducts] = useState(products)
   const [showFilters, setShowFilters] = useState(true)
+  const [filterMove, setFilterMove] = useState(false)
 
   const handleFilterChange = ({ categories, brands, colors, prices }) => {
     let filtered = products
@@ -91,6 +93,14 @@ const ShopPage = ({ products, categories }) => {
     setFilteredProducts(sortedProducts)
   }
 
+  useEffect(() => {
+    if (!showFilters) {
+      setFilterMove(true)
+    } else {
+      setFilterMove(false)
+    }
+  }, [showFilters])
+
   return (
     <>
       <NextSeo title="Shop" description="Browse our collection of products" />
@@ -100,23 +110,62 @@ const ShopPage = ({ products, categories }) => {
           <div className="flex items-center">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="border p-2 rounded mr-4"
+              className="border p-2 rounded mr-4 flex items-center"
             >
               {showFilters ? 'Hide Filters' : 'Show Filters'}
+              <svg
+                aria-hidden="true"
+                className="icon-filter-ds ml-2"
+                focusable="false"
+                viewBox="0 0 24 24"
+                role="img"
+                width="24px"
+                height="24px"
+                fill="none"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  d="M21 8.25H10m-5.25 0H3"
+                ></path>
+                <path
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  d="M7.5 6v0a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"
+                  clipRule="evenodd"
+                ></path>
+                <path
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  d="M3 15.75h10.75m5 0H21"
+                ></path>
+                <path
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  d="M16.5 13.5v0a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
             </button>
             <Sort onSortChange={handleSortChange} />
           </div>
         </div>
         <div className="flex">
-          {showFilters && (
-            <div className="w-1/4 pr-4">
-              <Filter
-                categories={categories}
-                onFilterChange={handleFilterChange}
-              />
-            </div>
-          )}
-          <div className={`w-full ${showFilters ? 'w-3/4' : 'w-full'}`}>
+          <div
+            className={`${styles.filterContainer} ${
+              showFilters ? '' : styles.filterMove
+            } ${filterMove ? styles.filterMove : ''}`}
+          >
+            <Filter
+              categories={categories}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+          <div
+            className={`${styles.mainContent} ${
+              showFilters ? '' : styles.expanded
+            }`}
+          >
             <ProductList products={filteredProducts} label="All Products" />
           </div>
         </div>

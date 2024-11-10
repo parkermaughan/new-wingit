@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './Filter.module.css'
 
-const Filter = ({ categories = [], onFilterChange }) => {
+const Filter = ({ categories = [], colors = [], onFilterChange }) => {
   const [selectedCategories, setSelectedCategories] = useState([])
   const [selectedBrands, setSelectedBrands] = useState([])
   const [selectedColors, setSelectedColors] = useState([])
@@ -21,108 +21,104 @@ const Filter = ({ categories = [], onFilterChange }) => {
   }
 
   const handleCheckboxChange = (value, setSelected, selected) => {
-    if (selected.includes(value)) {
-      setSelected(selected.filter((item) => item !== value))
-    } else {
-      setSelected([...selected, value])
-    }
+    const newSelected = selected.includes(value)
+      ? selected.filter((item) => item !== value)
+      : [...selected, value]
+
+    setSelected(newSelected)
+
     onFilterChange({
       categories: selectedCategories,
       brands: selectedBrands,
       colors: selectedColors,
       prices: selectedPrices,
+      [setSelected === setSelectedCategories
+        ? 'categories'
+        : setSelected === setSelectedBrands
+        ? 'brands'
+        : setSelected === setSelectedColors
+        ? 'colors'
+        : 'prices']: newSelected,
     })
   }
 
   const renderCheckbox = (value, selected, setSelected) => (
-    <div className={styles.checkboxContainer}>
+    <button
+      className={styles.checkboxContainer}
+      onClick={() => handleCheckboxChange(value, setSelected, selected)}
+    >
       <div
         className={`${styles['pseudo-checkbox']} ${
-          selected.includes(value)
-            ? `${styles['is--checked']} ${styles['css-1bppeb5']}`
-            : ''
+          selected.includes(value) ? styles['is--checked'] : ''
         }`}
-        onClick={() => handleCheckboxChange(value, setSelected, selected)}
       >
         {selected.includes(value) && (
           <div
-            className={`${styles['icon-checkmark']} ${styles['is--toggled']} ${styles['css-1iktvq5']}`}
+            className={`${styles['icon-checkmark']} ${styles['is--toggled']}`}
           />
         )}
       </div>
       <label className={styles.checkboxLabel}>{value}</label>
+    </button>
+  )
+
+  const renderFilterGroup = (label, section, items, selected, setSelected) => (
+    <div className={styles['filter-group']}>
+      <div
+        className={styles.accordionButton}
+        onClick={() => handleToggleSection(section)}
+      >
+        <div className={styles['trigger-content']}>
+          <div className={styles['trigger-content__label']}>{label}</div>
+          <div
+            className={`${styles['icon-chevron']} ${
+              openSections[section] ? styles.open : ''
+            }`}
+          />
+        </div>
+      </div>
+      <div
+        className={`${styles.accordionContent} ${
+          openSections[section] ? styles.open : ''
+        }`}
+      >
+        {items.map((item) => (
+          <div key={item}>{renderCheckbox(item, selected, setSelected)}</div>
+        ))}
+      </div>
     </div>
   )
 
   return (
-    <div className={styles.filterContainer}>
+    <div className={styles.filterWrapper}>
       <div className={styles.filter}>
-        <button
-          className={styles.accordionButton}
-          onClick={() => handleToggleSection('category')}
-        >
-          Filter by Category
-        </button>
-        {openSections.category && (
-          <div className={styles.accordionContent}>
-            {categories.map((category) => (
-              <div key={category}>
-                {renderCheckbox(
-                  category,
-                  selectedCategories,
-                  setSelectedCategories
-                )}
-              </div>
-            ))}
-          </div>
+        {renderFilterGroup(
+          'Filter by Category',
+          'category',
+          categories,
+          selectedCategories,
+          setSelectedCategories
         )}
-
-        <button
-          className={styles.accordionButton}
-          onClick={() => handleToggleSection('brand')}
-        >
-          Filter by Brand
-        </button>
-        {openSections.brand && (
-          <div className={styles.accordionContent}>
-            {['Brand 1', 'Brand 2'].map((brand) => (
-              <div key={brand}>
-                {renderCheckbox(brand, selectedBrands, setSelectedBrands)}
-              </div>
-            ))}
-          </div>
+        {renderFilterGroup(
+          'Filter by Brand',
+          'brand',
+          ['Brand 1', 'Brand 2'],
+          selectedBrands,
+          setSelectedBrands
         )}
-
-        <button
-          className={styles.accordionButton}
-          onClick={() => handleToggleSection('color')}
-        >
-          Filter by Color
-        </button>
-        {openSections.color && (
-          <div className={styles.accordionContent}>
-            {['Red', 'Blue'].map((color) => (
-              <div key={color}>
-                {renderCheckbox(color, selectedColors, setSelectedColors)}
-              </div>
-            ))}
-          </div>
+        {renderFilterGroup(
+          'Filter by Color',
+          'color',
+          colors,
+          selectedColors,
+          setSelectedColors
         )}
-
-        <button
-          className={styles.accordionButton}
-          onClick={() => handleToggleSection('price')}
-        >
-          Shop by Price
-        </button>
-        {openSections.price && (
-          <div className={styles.accordionContent}>
-            {['0-25', '25-50', '50-100'].map((price) => (
-              <div key={price}>
-                {renderCheckbox(price, selectedPrices, setSelectedPrices)}
-              </div>
-            ))}
-          </div>
+        {renderFilterGroup(
+          'Shop by Price',
+          'price',
+          ['0-25', '25-50', '50-100'],
+          selectedPrices,
+          setSelectedPrices
         )}
       </div>
     </div>

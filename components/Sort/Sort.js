@@ -6,7 +6,7 @@ const Sort = ({ onSortChange }) => {
   }
 
   return (
-    <div className="mb-8">
+    <div>
       <label htmlFor="sort" className="mr-2">
         Sort By:
       </label>

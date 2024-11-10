@@ -33,6 +33,15 @@
     animation: fadeOut 0.5s forwards;
 }
 
+.main-content {
+    transition: width 0.5s ease-in-out, margin-left 0.5s ease-in-out;
+    width: 75%;
+}
+
+.main-content.expanded {
+    width: 100%;
+}
+
 html {
     box-sizing: border-box;
     font-size: calc(var(--font-body-scale)* 90%);
