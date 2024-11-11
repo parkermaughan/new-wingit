@@ -22,3 +22,7 @@
     margin-right: 0;
     /* Remove margin from the last thumbnail */
 }
+
+.productImage {
+    --tw-aspect-h: 1.5;
+}

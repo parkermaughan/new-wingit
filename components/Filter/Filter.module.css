@@ -192,7 +192,6 @@
 .filterContainer {
     animation: animation-my4jl 300ms forwards;
     width: 300px;
-    margin-right: 25px;
 }
 
 .hidden {
@@ -212,7 +211,7 @@
 
 @keyframes animation-my4jl {
     0% {
-        margin-left: -300px;
+        margin-left: -340px;
         visibility: visible;
     }
 
@@ -228,6 +227,6 @@
     }
 
     100% {
-        margin-left: -300px;
+        margin-left: -340px;
     }
 }
