@@ -21,7 +21,7 @@ export async function getStaticProps() {
   const colors = [
     ...new Set(
       products.flatMap((product) =>
-        product.options
+        (product.options || [])
           .filter((option) => option.name.toLowerCase() === 'color')
           .flatMap((option) => option.values)
       )
