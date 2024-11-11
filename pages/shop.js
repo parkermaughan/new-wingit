@@ -9,21 +9,36 @@ import styles from '@/components/Filter/Filter.module.css'
 export async function getStaticProps() {
   const products = await getAllProducts()
 
+  // Log the products to verify the data
+  console.log('Fetched products:', products)
+
   // Extract unique categories from products
   const categories = [
     ...new Set(products.map((product) => product.tags).flat()),
+  ]
+
+  // Extract unique colors from products
+  const colors = [
+    ...new Set(
+      products.flatMap((product) =>
+        product.options
+          .filter((option) => option.name.toLowerCase() === 'color')
+          .flatMap((option) => option.values)
+      )
+    ),
   ]
 
   return {
     props: {
       products,
       categories,
+      colors,
     },
     revalidate: 10,
   }
 }
 
-const ShopPage = ({ products, categories }) => {
+const ShopPage = ({ products, categories, colors }) => {
   const [filteredProducts, setFilteredProducts] = useState(products)
   const [showFilters, setShowFilters] = useState(true)
   const [filterMove, setFilterMove] = useState(false)
@@ -45,7 +60,12 @@ const ShopPage = ({ products, categories }) => {
 
     if (colors.length > 0) {
       filtered = filtered.filter((product) =>
-        colors.some((color) => product.tags.includes(color))
+        colors.some((color) =>
+          product.options
+            .filter((option) => option.name.toLowerCase() === 'color')
+            .flatMap((option) => option.values)
+            .includes(color)
+        )
       )
     }
 
@@ -158,6 +178,7 @@ const ShopPage = ({ products, categories }) => {
           >
             <Filter
               categories={categories}
+              colors={colors}
               onFilterChange={handleFilterChange}
             />
           </div>
