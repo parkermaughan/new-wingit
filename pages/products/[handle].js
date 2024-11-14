@@ -6,10 +6,36 @@ import {
 import ProductList from '@/components/Product/ProductList'
 import ProductForm from '@/components/Product/ProductForm'
 
-// pages/products/[handle].js
+export default function ProductPage({ productByHandle, products }) {
+  // Log the productByHandle and products to verify the data
+  console.log('Product by handle:', productByHandle)
+  console.log('Related products:', products)
+
+  if (!productByHandle) {
+    return <div>Product not found</div>
+  }
+
+  const relatedProducts = products.filter(
+    (product) => product.handle !== productByHandle.handle
+  )
+
+  return (
+    <>
+      <NextSeo
+        title={productByHandle.title ?? 'Product title'}
+        description={productByHandle.description ?? 'Product description'}
+      />
+      <ProductForm product={productByHandle} />
+      <ProductList products={relatedProducts} label="Related products" />
+    </>
+  )
+}
 
 export async function getStaticPaths() {
   const products = await getAllProductHandles()
+
+  // Log the products to verify the data
+  console.log('Products in getStaticPaths:', products)
 
   return {
     paths: products.map((product) => ({
@@ -27,6 +53,10 @@ export async function getStaticProps({ params }) {
       handle: params.handle,
     })
 
+  // Log the productByHandle and products to verify the data
+  console.log('Product by handle in getStaticProps:', productByHandle)
+  console.log('Related products in getStaticProps:', products)
+
   return {
     props: {
       productByHandle,
@@ -35,22 +65,3 @@ export async function getStaticProps({ params }) {
     revalidate: 10,
   }
 }
-
-const ProductPage = ({ productByHandle, products }) => {
-  const relatedProducts = products.filter(
-    (product) => product.handle !== productByHandle.handle
-  )
-
-  return (
-    <>
-      <NextSeo
-        title={productByHandle.title ?? 'Product title'}
-        description={productByHandle.description ?? 'Product description'}
-      />
-      <ProductForm product={productByHandle} />
-      <ProductList products={relatedProducts} label="Related products" />
-    </>
-  )
-}
-
-export default ProductPage
