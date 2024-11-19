@@ -9,49 +9,98 @@ import styles from '@/components/Filter/Filter.module.css'
 export async function getStaticProps() {
   const products = await getAllProducts()
 
-  // Extract unique categories from products
-  const categories = [
-    ...new Set(products.map((product) => product.tags).flat()),
+  // Log the products to verify the data
+  console.log('Fetched products:', products)
+
+  // Extract unique collections from products
+  const collections = [
+    ...new Set(
+      products.flatMap((product) =>
+        product.collections.edges.map((edge) => edge.node.title)
+      )
+    ),
+  ]
+
+  // Extract unique brands from products
+  const brands = [...new Set(products.map((product) => product.tags).flat())]
+
+  // Extract unique colors from products
+  const colors = [
+    ...new Set(
+      products.flatMap((product) =>
+        product.options
+          .filter((option) => option.name.toLowerCase() === 'color')
+          .flatMap((option) => option.values)
+      )
+    ),
   ]
 
   return {
     props: {
       products,
-      categories,
+      collections,
+      brands,
+      colors,
     },
     revalidate: 10,
   }
 }
 
-const ShopPage = ({ products, categories }) => {
+const ShopPage = ({ products, collections, brands, colors }) => {
   const [filteredProducts, setFilteredProducts] = useState(products)
-  const [showFilters, setShowFilters] = useState(true)
+  const [showFilters, setShowFilters] = useState(false)
   const [filterMove, setFilterMove] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
-  const handleFilterChange = ({ categories, brands, colors, prices }) => {
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 950)
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const handleFilterChange = (newFilters) => {
+    console.log('Applied Filters:', newFilters)
     let filtered = products
 
-    if (categories.length > 0) {
+    if (newFilters.collections && newFilters.collections.length > 0) {
+      console.log('Filtering by collections:', newFilters.collections)
       filtered = filtered.filter((product) =>
-        categories.some((category) => product.tags.includes(category))
+        newFilters.collections.some((collection) =>
+          product.collections.edges.some((edge) =>
+            edge.node.title.includes(collection)
+          )
+        )
       )
     }
 
-    if (brands.length > 0) {
+    if (newFilters.brands && newFilters.brands.length > 0) {
+      console.log('Filtering by brands:', newFilters.brands)
       filtered = filtered.filter((product) =>
-        brands.some((brand) => product.tags.includes(brand))
+        newFilters.brands.some((brand) => product.tags.includes(brand))
       )
     }
 
-    if (colors.length > 0) {
+    if (newFilters.colors && newFilters.colors.length > 0) {
+      console.log('Filtering by colors:', newFilters.colors)
       filtered = filtered.filter((product) =>
-        colors.some((color) => product.tags.includes(color))
+        newFilters.colors.some((color) =>
+          product.options
+            .filter((option) => option.name.toLowerCase() === 'color')
+            .flatMap((option) => option.values)
+            .includes(color)
+        )
       )
     }
 
-    if (prices.length > 0) {
+    if (newFilters.prices && newFilters.prices.length > 0) {
+      console.log('Filtering by prices:', newFilters.prices)
       filtered = filtered.filter((product) =>
-        prices.some((price) => {
+        newFilters.prices.some((price) => {
           const [min, max] = price.split('-').map(Number)
           return (
             product.priceRange.minVariantPrice.amount >= min &&
@@ -61,6 +110,7 @@ const ShopPage = ({ products, categories }) => {
       )
     }
 
+    console.log('Filtered Products:', filtered)
     setFilteredProducts(filtered)
   }
 
@@ -91,6 +141,11 @@ const ShopPage = ({ products, categories }) => {
         break
     }
     setFilteredProducts(sortedProducts)
+  }
+
+  const handleApplyFilters = (filters) => {
+    setShowFilters(false)
+    handleFilterChange(filters)
   }
 
   useEffect(() => {
@@ -151,16 +206,34 @@ const ShopPage = ({ products, categories }) => {
           </div>
         </div>
         <div className="flex">
-          <div
-            className={`${styles.filterContainer} ${
-              showFilters ? '' : styles.filterMove
-            } ${filterMove ? styles.filterMove : ''}`}
-          >
-            <Filter
-              categories={categories}
-              onFilterChange={handleFilterChange}
-            />
-          </div>
+          {isMobile && showFilters && (
+            <div className={`${styles.filterOverlay}`}>
+              <div className={styles.filterContent}>
+                <Filter
+                  collections={collections}
+                  brands={brands}
+                  colors={colors}
+                  onFilterChange={handleFilterChange}
+                  onApplyFilters={handleApplyFilters}
+                  isMobile={isMobile}
+                />
+              </div>
+            </div>
+          )}
+          {!isMobile && (
+            <div
+              className={`${styles.filterContainer} ${
+                showFilters ? '' : styles.filterMove
+              } ${filterMove ? styles.filterMove : ''}`}
+            >
+              <Filter
+                collections={collections}
+                brands={brands}
+                colors={colors}
+                onFilterChange={handleFilterChange}
+              />
+            </div>
+          )}
           <div
             className={`${styles.mainContent} ${
               showFilters ? '' : styles.expanded

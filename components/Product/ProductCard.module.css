@@ -1,0 +1,181 @@
+.productHover:hover .title,
+.productHover:hover .tag {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  display: none;
+}
+
+.productImageWrapper {
+  aspect-ratio: 1 / 1;
+  /* Ensures the image is square */
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+
+.thumbnailDropdown {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+  background-color: transparent;
+  padding: 0.5rem;
+  z-index: 10;
+  position: absolute;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.productHover:hover .thumbnailDropdown {
+  opacity: 1;
+  position: relative;
+}
+
+.thumbnail {
+  width: 40px;
+  /* Set the width of the thumbnail */
+  height: 40px;
+  /* Set the height of the thumbnail */
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  /* Add a border to the thumbnail */
+  border-radius: 4px;
+  /* Add border radius to the thumbnail */
+  margin-right: 0.25rem;
+  /* Add margin between thumbnails */
+}
+
+.thumbnail:last-child {
+  margin-right: 0;
+  /* Remove margin from the last thumbnail */
+}
+
+@media (min-width: 768px) {
+  .productImageWrapper {
+    aspect-ratio: 1 / 1;
+    /* Ensures the image is square */
+  }
+
+  .thumbnail {
+    width: 40px;
+    /* Set the width of the thumbnail */
+    height: 40px;
+    /* Set the height of the thumbnail */
+  }
+}
+
+/* Additional styles from Nike.com */
+.productHover {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  width: 100%;
+}
+
+.productHover .loader-overlay {
+  position: fixed;
+  z-index: 10;
+}
+
+.productHover figure {
+  margin: 0;
+}
+
+.productHover .wall-header {
+  padding: 0 48px 15px;
+  background: #fff;
+}
+
+.productHover .wall-header__title {
+  transform: scale(1);
+  transform-origin: left center;
+  transition: transform 200ms;
+}
+
+.productHover .wall-header__title:hover {
+  transform: scale(0.75);
+}
+
+.productHover .wall-header__nav {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.productHover .wall-header__preview-bar {
+  width: 100%;
+  color: #fff8a3;
+  font-size: 1.25em;
+  font-weight: 700;
+  line-height: 3em;
+  background: #51acc7;
+  text-shadow: 0 0 3px #003344, 0 0 3px #003344, 0 3px 3px #034;
+}
+
+.productHover .wall-header__nav .icon-filter-ds {
+  margin-left: 6px;
+}
+
+.productHover .wall-header__nav .icon-filter-ds:hover {
+  color: #707072;
+}
+
+.productHover .product-card__title {
+  color: #111;
+  font-weight: 500;
+}
+
+.productHover .product-card__subtitle {
+  color: #707072;
+  font-size: 16px;
+}
+
+.productHover .product-card__price-wrapper .is--striked-out {
+  color: #707072;
+  text-decoration: line-through;
+}
+
+.productHover .product-card__price-wrapper .product-price.is--current-price {
+  font-weight: 500;
+}
+
+.productHover .product-card__price-wrapper .product-price__wrapper {
+  display: flex;
+}
+
+.productHover .product-card__price-wrapper .product-price__wrapper .is--current-price {
+  padding-right: 5px;
+}
+
+.productHover .product-card__price-wrapper .product-price {
+  font-size: 16px;
+  padding-right: 16px;
+}
+
+/* Additional styles for the image loader */
+.wall-image-loader {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 1;
+  transition: opacity 0.28s;
+}
+
+.productHeroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.productInfo {
+  min-height: 94px;
+}
