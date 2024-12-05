@@ -1,16 +1,16 @@
 import React from 'react'
 import { RadioGroup } from '@headlessui/react'
 
-const ProductOptions = ({ sizes }) => {
-  if (!sizes || !sizes.edges) {
+const ProductOptions = ({ sizes, selectedSize, setSelectedSize }) => {
+  if (!sizes) {
     return null
   }
 
   return (
-    <RadioGroup>
-      <RadioGroup.Label className="sr-only">Choose a size</RadioGroup.Label>
+    <RadioGroup value={selectedSize} onChange={setSelectedSize}>
+      <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
       <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-        {sizes.edges.map(({ node: product }, index) => (
+        {sizes.map((product, index) => (
           <RadioGroup.Option
             key={`${product.id}-${index}`}
             value={product}

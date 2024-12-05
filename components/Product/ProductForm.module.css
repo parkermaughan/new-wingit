@@ -1,0 +1,15 @@
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.thumbnail img {
+  border-radius: 8px;
+}
+.gridTemplate {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 1rem;
+  align-items: start;
+}

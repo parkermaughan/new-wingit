@@ -7,6 +7,10 @@ import styles from './ProductCard.module.css' // Assuming you have a CSS module 
 function ProductCard({ product }) {
   const { handle, title, images, tags, priceRange, compareAtPriceRange } =
     product
+
+  // Log the product data
+  console.log('Product Data:', product)
+
   const originalImage = images?.edges?.[0]?.node
   const [featuredImage, setFeaturedImage] = useState(originalImage)
   const [hoveredImage, setHoveredImage] = useState(null)
