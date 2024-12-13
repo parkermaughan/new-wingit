@@ -1,51 +1,33 @@
 import React from 'react'
-import { RadioGroup } from '@headlessui/react'
 
-const ProductOptions = ({ sizes, selectedSize, setSelectedSize }) => {
-  if (!sizes) {
-    return null
-  }
-
+// Component to display product options
+const ProductOptions = ({ variants, selectedVariant, setSelectedVariant }) => {
   return (
-    <RadioGroup value={selectedSize} onChange={setSelectedSize}>
-      <RadioGroup.Label className="sr-only">Choose a color</RadioGroup.Label>
-      <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-        {sizes.map((product, index) => (
-          <RadioGroup.Option
-            key={`${product.id}-${index}`}
-            value={product}
-            className={({ active, checked }) =>
-              `${active ? 'ring-2 ring-offset-2 ring-indigo-500' : ''}
-              ${checked ? 'bg-indigo-600 text-white' : 'bg-white'}
-              relative border rounded-lg shadow-sm p-4 flex cursor-pointer focus:outline-none`
-            }
+    <div className="mt-4">
+      {/* Title for the color options */}
+      <h3 className="text-sm font-medium text-gray-900">Color</h3>
+      <div className="mt-2 grid grid-cols-4 gap-4">
+        {/* Map through the variants to display color options */}
+        {variants?.map((variant) => (
+          <button
+            key={variant.id} // Unique key for each variant
+            className={`border rounded-md p-2 ${
+              selectedVariant?.id === variant.id // Highlight the selected variant
+                ? 'border-black'
+                : 'border-gray-300'
+            }`}
+            onClick={() => setSelectedVariant(variant)} // Set the selected variant on click
           >
-            {({ active, checked }) => (
-              <>
-                <div className="flex-1 flex">
-                  <div className="flex flex-col">
-                    <RadioGroup.Label
-                      as="span"
-                      className={`block text-sm font-medium ${
-                        checked ? 'text-white' : 'text-gray-900'
-                      }`}
-                    >
-                      {product.title}
-                    </RadioGroup.Label>
-                  </div>
-                </div>
-                <div
-                  className={`absolute -inset-px rounded-lg pointer-events-none ${
-                    active ? 'border' : 'border-2'
-                  } ${checked ? 'border-indigo-500' : 'border-transparent'}`}
-                  aria-hidden="true"
-                />
-              </>
-            )}
-          </RadioGroup.Option>
+            {/* Display the color value */}
+            {
+              variant.selectedOptions.find(
+                (option) => option.name.toLowerCase() === 'color'
+              )?.value
+            }
+          </button>
         ))}
       </div>
-    </RadioGroup>
+    </div>
   )
 }
 

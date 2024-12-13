@@ -15,8 +15,9 @@ export async function getStaticProps() {
   // Extract unique collections from products
   const collections = [
     ...new Set(
-      products.flatMap((product) =>
-        product.collections.edges.map((edge) => edge.node.title)
+      products.flatMap(
+        (product) =>
+          product.collections?.edges?.map((edge) => edge.node.title) || []
       )
     ),
   ]
@@ -27,10 +28,11 @@ export async function getStaticProps() {
   // Extract unique colors from products
   const colors = [
     ...new Set(
-      products.flatMap((product) =>
-        product.options
-          .filter((option) => option.name.toLowerCase() === 'color')
-          .flatMap((option) => option.values)
+      products.flatMap(
+        (product) =>
+          product.options
+            ?.filter((option) => option.name.toLowerCase() === 'color')
+            .flatMap((option) => option.values) || []
       )
     ),
   ]
@@ -71,7 +73,7 @@ const ShopPage = ({ products, collections, brands, colors }) => {
       console.log('Filtering by collections:', newFilters.collections)
       filtered = filtered.filter((product) =>
         newFilters.collections.some((collection) =>
-          product.collections.edges.some((edge) =>
+          product.collections?.edges?.some((edge) =>
             edge.node.title.includes(collection)
           )
         )
@@ -90,7 +92,7 @@ const ShopPage = ({ products, collections, brands, colors }) => {
       filtered = filtered.filter((product) =>
         newFilters.colors.some((color) =>
           product.options
-            .filter((option) => option.name.toLowerCase() === 'color')
+            ?.filter((option) => option.name.toLowerCase() === 'color')
             .flatMap((option) => option.values)
             .includes(color)
         )

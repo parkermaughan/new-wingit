@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { formatPrice } from '@/utils/index'
@@ -7,13 +7,7 @@ import styles from './ProductCard.module.css' // Assuming you have a CSS module 
 function ProductCard({ product }) {
   const { handle, title, images, tags, priceRange, compareAtPriceRange } =
     product
-
-  // Log the product data
-  console.log('Product Data:', product)
-
-  const originalImage = images?.edges?.[0]?.node
-  const [featuredImage, setFeaturedImage] = useState(originalImage)
-  const [hoveredImage, setHoveredImage] = useState(null)
+  const [featuredImage, setFeaturedImage] = useState(images?.edges?.[0]?.node)
   const price = formatPrice(priceRange.minVariantPrice.amount)
   const originalPrice = compareAtPriceRange?.minVariantPrice?.amount
     ? formatPrice(compareAtPriceRange.minVariantPrice.amount)
@@ -31,83 +25,64 @@ function ProductCard({ product }) {
       ).toFixed(2)
     : null
 
-  const handleMouseEnter = (node) => {
-    setHoveredImage(node)
-  }
-
-  const handleMouseLeave = () => {
-    setHoveredImage(null)
-  }
-
   return (
     <Link href={`/products/${handle}`}>
-      <a className={`group relative ${styles.productHover}`}>
-        <div className={styles.productContainer}>
+      <a className="group">
+        <div className="bg-gray-100 border">
           <div
-            className={`relative w-full overflow-hidden ${styles.productImageWrapper}`}
+            className={`relative w-full overflow-hidden bg-gray-400 aspect-w-1 aspect-h-1 md:aspect-w-2 md:aspect-h-3 ${styles.productImage}`}
           >
-            {featuredImage && (
+            {featuredImage?.url ? (
               <Image
-                src={featuredImage.transformedSrc}
+                src={featuredImage.url}
                 alt={featuredImage.altText ?? 'Product Image'}
-                className={`object-cover object-center w-full h-full ${
-                  hoveredImage ? styles.fadeOut : styles.fadeIn
-                }`}
+                className="object-cover object-center w-full h-full group-hover:opacity-75"
                 layout="fill"
                 priority
               />
-            )}
-            {hoveredImage && (
-              <Image
-                src={hoveredImage.transformedSrc}
-                alt={hoveredImage.altText ?? 'Thumbnail Image'}
-                className={`object-cover object-center w-full h-full ${styles.fadeIn}`}
-                layout="fill"
-                priority
-              />
+            ) : (
+              <div className="w-full h-full bg-gray-200"></div>
             )}
           </div>
-          <div className={`m-4 ${styles.productInfo}`}>
-            <div className={`${styles.thumbnailDropdown}`}>
-              {images?.edges?.slice(1, 4)?.map(({ node }, index) => (
-                <div
-                  key={`${node.id}-${index}`} // Ensure each key is unique
-                  className={`relative ${styles.thumbnail}`}
-                  onMouseEnter={() => handleMouseEnter(node)}
-                  onMouseLeave={handleMouseLeave}
-                >
+          <div className="m-4">
+            <h3 className="mt-1 text-sm font-bold text-gray-700 uppercase">
+              {title}
+            </h3>
+            <p className="mt-1 text-sm text-gray-500 uppercase">
+              {tags?.[0] ?? 'No tag'}
+            </p>
+            <div className="flex items-center mt-1">
+              <p className="text-sm text-gray-700">{price}</p>
+              {hasSale && (
+                <>
+                  <p className="ml-2 text-sm text-gray-500 line-through">
+                    {originalPrice}
+                  </p>
+                  <p className="ml-2 text-sm text-green-500">{savings}% off</p>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-center mt-2 space-x-2">
+            {images?.edges?.slice(1, 4)?.map(({ node }, index) => (
+              <div
+                key={`${node.id}-${index}`} // Ensure each key is unique
+                className="relative w-12 h-12 overflow-hidden bg-gray-200"
+                onMouseEnter={() => setFeaturedImage(node)}
+                onMouseLeave={() => setFeaturedImage(images?.edges?.[0]?.node)}
+              >
+                {node?.url ? (
                   <Image
-                    src={node.transformedSrc}
+                    src={node.url}
                     alt={node.altText ?? 'Thumbnail Image'}
                     className="object-cover object-center w-full h-full"
                     layout="fill"
                   />
-                </div>
-              ))}
-            </div>
-            <h3
-              className={`mt-1 text-sm font-bold text-gray-700 uppercase ${styles.title}`}
-            >
-              {title}
-            </h3>
-            <p className={`mt-1 text-sm text-gray-500 uppercase ${styles.tag}`}>
-              {tags?.[0] ?? 'No tag'}
-            </p>
-            <div className="flex flex-col mt-1">
-              <div className="flex items-center">
-                <p className="text-sm text-gray-700">{price}</p>
-                {hasSale && (
-                  <>
-                    <p className="ml-2 text-sm text-gray-500 line-through">
-                      {originalPrice}
-                    </p>
-                  </>
+                ) : (
+                  <div className="w-full h-full bg-gray-200"></div>
                 )}
               </div>
-              {hasSale && (
-                <p className="text-sm text-green-500">{savings}% off</p>
-              )}
-            </div>
+            ))}
           </div>
         </div>
       </a>
